@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Home</title>
+        <script src="app.js"></script>
+        <link rel="stylesheet" href="style.css">
+    </head>
+    <body>
+      	<div class="overlay" id="startupMenu">
+			<div class="menu">
+				<div>
+					<h1>Tetris</h1>
+					<h2>Year: 2023</h2>
+					<h2>Group Number: 27</h2>
+					<h2>Created By: Mason Dunbar s5056779</h2>
+					<h2>Course Code: 3815ICT Software Engineering</h2>
+				</div>
+				<div>
+					<button id="startGameBtn" class="orange">Start Game</button>
+					<button id="topScoreBtn"class="red">Top Score</button>
+					<button id="settingsBtn"class="purple">Settings</button>
+					<button id="exitBtn"class="green">Exit</button>
+				</div>
+			</div>
+		</div>
+        <div class="overlay" id="settingsOverlay" style="display: none;">
+          	<div class="menu">
+				<h1>Configure</h1>
+				<button class="orange">Size of field</button>
+				<button class="red">Game Level</button>
+				<button class="purple">Normal / Extended </button>
+				<button class="green">1 Person / AI Game</button>
+				<button id="settingsGoBackBtn" class="blue">Go Back to Menu</button>
+          	</div>
+        </div>
+        <div class="overlay" id="scoreOverlay" style="display: none;">
+          <div class="menu">
+            <div>
+              <h1>Top Scores</h1>
+              <h3>Top 10 Scores</h3>
+              <table>
+                <tr>
+                  <td>1. 1000</td>
+                  <td>Mason</td>
+                </tr>
+                <tr>
+                  <td>2. 900</td>
+                  <td>John</td>
+                </tr>
+                <tr>
+                  <td>3. 800</td>
+                  <td>Bob</td>
+                </tr>
+                <tr>
+                  <td>4. 700</td>
+                  <td>Joe</td>
+                </tr>
+                <tr>
+                  <td>5. 600</td>
+                  <td>Jack</td>
+                </tr>
+                <tr>
+                  <td>6. 500</td>
+                  <td>James</td>
+                </tr>
+                <tr>
+                  <td>7. 400</td>
+                  <td>Jim</td>
+                </tr>
+                <tr>
+                  <td>8. 300</td>
+                  <td>Jeff</td>
+                </tr>
+                <tr>
+                  <td>9. 200</td>
+                  <td>Jake</td>
+                </tr>
+                <tr>
+                  <td>10. 100</td>
+                  <td>Jill</td>
+                </tr>
+              </table>
+            </div>
+            <button id="topScoreGoBackBtn"class="red">Go Back to Menu</button>
+          </div>
+        </div>
+        <div class="contianer">
+          	<div class="box">
+            	<div class="grid"></div>
+          	</div>
+          	<div class="box sidebar">
+				<div class="next">
+					<h2>Next Block</h2>
+					<div class="outline-box aspect-square">
+						<div class="piece-preview" id="preview">     
+							<div class="mini-grid">
+								<div></div>
+								<div></div>
+								<div></div>
+								<div></div>
+								<div></div>
+								<div></div>
+								<div></div>
+								<div></div>
+								<div></div>
+								<div></div>
+								<div></div>
+								<div></div>
+								<div></div>
+								<div></div>
+								<div></div>
+								<div></div>
+							</div>
+						</div>
+					</div>
+              	</div>
+				<div class="stats">
+				<h2>Score:</h2>
+				<div class="outline-box">
+					<p id="score">Score: 0</p>
+					<p id="lines">Lines: 0</p>
+				</div>
+				</div>
+          	</div>
+          <div class="box sidebar alternate">
+            <div class="info">
+			  <div>
+				<h2>Group Number: 27</h2>
+			</div>
+            </div>
+            <div class="help">
+              <h2>Help:</h2>
+              <div class="outline-box">
+                <p>Left - A, Left</p>
+                <p>Right - D, Right</p>
+                <p>Down - S, Down</p>
+                <p>Rotate - W, Up</p>
+                <p>Drop - Space</p>
+              </div>
+            </div>
+            
+          </div>
+        
+      </div>
+    </body>
+</html>
