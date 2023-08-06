@@ -1,15 +1,23 @@
 document.addEventListener('DOMContentLoaded', () =>{
     class TetrisGame {
         constructor()  {
+            // Initialize the game
+            // Initialize the variables
             this.scoreDisplay = document.querySelector('#score');
             this.gridElement = document.querySelector('.grid');
             this.squares = Array.from(document.querySelectorAll('.grid div'));
+            //set the width of the grid
             this.width = 10;
+
             this.timerId = null;
+            //console.log(this.timerId);
+
             this.currentPosition = 4;
             this.currentRotation = 0;
             this.nextRandom = 0;
             this.score = 0;
+            this.isPaused = false;
+            this.gameOverCheck = false;
 
             // Create the grid and initialize the squares array
             for (let i = 0; i < 200; i++) {
@@ -42,8 +50,22 @@ document.addEventListener('DOMContentLoaded', () =>{
                 //1st rotation 1-2-11-21
                 [1, 2, this.width+1, this.width*2+1],
     
-                //2nd rotation 10-11-12-22
-                [this.width, this.width+1, this.width+2, this.width*2+2],
+                //2nd rotation 3-10-11-12
+                [3, this.width, this.width+1, this.width+2, this.width*2+2],
+    
+                //3rd rotation 1-11-20-21
+                [1, this.width+1, this.width*2, this.width*2+1],
+    
+                //4th rotation 10-20-21-22
+                [this.width, this.width*2, this.width*2+1, this.width*2+2]
+            ]
+
+            this.backwardslShape = [
+                //1st rotation 1-2-12-22
+                [1, 2, this.width+2, this.width*2+2],
+    
+                //2nd rotation 2-10-11-12
+                [2, this.width, this.width+1, this.width+2],
     
                 //3rd rotation 1-11-20-21
                 [1, this.width+1, this.width*2, this.width*2+1],
@@ -99,7 +121,7 @@ document.addEventListener('DOMContentLoaded', () =>{
                 [this.width, this.width+1, this.width+2, this.width+3]
             ]
     
-            this.shapeTypes = [this.lShape, this.zShape, this.tShape, this.oShape, this.iShape]
+            this.shapeTypes = [this.lShape, this.backwardslShape, this.zShape, this.tShape, this.oShape, this.iShape]
             //console.log(shapeTypes)
 
             this.undraw = () => {
@@ -124,7 +146,9 @@ document.addEventListener('DOMContentLoaded', () =>{
             };
     
             this.freeze = () => {
+                // If the current shape is at the bottom of the grid or on top of a taken square, freeze the shape
                 if (this.current.some(index => this.squares[this.currentPosition + index + this.width].classList.contains('taken'))) {
+                    // Make the current shape taken
                     this.current.forEach(index => this.squares[this.currentPosition + index].classList.add('taken'));
                     // start a new shape falling
                     this.random = this.nextRandom;
@@ -176,6 +200,63 @@ document.addEventListener('DOMContentLoaded', () =>{
                 this.moveDown();
             }, 500);
 
+            this.pauseGame = () => {
+                console.log('Game Paused from pausegame');
+                
+                clearInterval(this.timerId);
+                this.timerId = null;
+
+                this.isPaused = true;
+                console.log(this.isPaused);
+
+                const pauseOverlay = document.getElementById('pauseOverlay');
+                pauseOverlay.style.display = ''; // Show the settings overlay
+
+                const confirmExitBtn = document.getElementById('exitPauseBtn');
+                confirmExitBtn.addEventListener('click', () => {
+                    console.log('Open Confirm Exit Menu');
+                    pauseOverlay.style.display = 'none'; // Hide the settings overlay
+                    const confirmExitMenu = document.getElementById('exitConfirmOverlay');
+                    confirmExitMenu.style.display = ''; // Show the startup menu
+
+                    const confirmExitYesBtn = document.getElementById('exitYesBtn');
+                    confirmExitYesBtn.addEventListener('click', () => {
+                        console.log('Exiting the game...');
+                        const startupMenu = document.getElementById('startupMenu');
+                        startupMenu.style.display = ''; // Show the startup menu
+                        confirmExitMenu.style.display = 'none'; // Hide the settings overlay
+
+                        // Add code to restart the game background and score
+
+
+                    });
+                    const confirmExitNoBtn = document.getElementById('exitNoBtn');
+                    confirmExitNoBtn.addEventListener('click', () => {
+                        console.log('Resuming the game...');
+                        confirmExitMenu.style.display = 'none'; // Hide the settings overlay
+                        if (this.isPaused === true) {
+                            console.log('Game Resumed from no confirm exit');
+                            this.timerId = null
+                            this.resumeGame();
+                        } else if (this.isPaused === false) {
+                            this.pauseGame();
+                        }
+                    });
+
+                });
+            }
+    
+            this.resumeGame= () => {
+                console.log('Game Resumed from resumegame');
+                this.timerId = null;
+                this.timerId = setInterval(() => {
+                    this.moveDown();
+                }, 500);
+                pauseOverlay.style.display = 'none'; // Hide the settings overlay
+                this.isPaused = false;
+                console.log(this.isPaused);
+            }
+
             // Assign functions to keyCodes
             document.addEventListener('keyup', (e) => {
                 this.control(e);
@@ -201,29 +282,81 @@ document.addEventListener('DOMContentLoaded', () =>{
         }
 
         freeze(){
+            //if block has settled
             if(current.some(index => squares[currentPosition + index + width].classList.contains('taken'))){
+                //make it block
                 current.forEach(index => squares[currentPosition + index].classList.add('taken'))
                 //start a new shape falling
                 random = nextRandom
                 nextRandom = Math.floor(Math.random()*shapeTypes.length)
                 current = shapeTypes[random][currentRotation]
                 currentPosition = 4
+                //draw the new shape
                 draw()
+                //display the next shape
                 displayShape()
+                //add score
                 addScore()
+                //check for game over
                 gameOver()
             }
         }
 
         control(e) {
-            if (e.keyCode === 37) {
-                this.moveLeft();
-            } else if (e.keyCode === 38) {
-                this.rotate();
-            } else if (e.keyCode === 39) {
-                this.moveRight();
-            } else if (e.keyCode === 40) {
-                this.moveDown();
+            if (this.gameOverCheck === true) {
+                return;
+            } else if (this.gameOverCheck === false) {
+                if (e.keyCode === 37) {
+                    this.moveLeft();
+                } 
+                else if (e.keyCode === 65) {
+                    this.moveLeft();
+                }
+
+                else if (e.keyCode === 38) {
+                    this.rotate();
+                } 
+                else if (e.keyCode === 87) {
+                    this.rotate();
+                }
+                
+                else if (e.keyCode === 39) {
+                    this.moveRight();
+                } 
+                else if (e.keyCode === 68) {
+                    this.moveRight();
+                }
+                
+                else if (e.keyCode === 40) {
+                    this.moveDown();
+                } 
+                else if (e.keyCode === 83) {
+                    this.moveDown();
+                }
+
+
+                else if (e.keyCode === 27) {
+                    if (this.isPaused === false) {
+                        this.pauseGame();
+                        this.isPaused = true;
+                        console.log(this.isPaused);
+                    } else {
+                        this.resumeGame();
+                        this.isPaused = false;
+                        console.log(this.isPaused);
+                    }
+                }
+                else if (e.keyCode === 80) {
+                    if (this.isPaused === false) {
+                        this.pauseGame();
+                        this.isPaused = true;
+                        console.log(this.isPaused);
+                    } else {
+                        this.resumeGame();
+                        this.isPaused = false;
+                        console.log(this.isPaused);
+                    }
+                }
             }
         }
 
@@ -247,7 +380,8 @@ document.addEventListener('DOMContentLoaded', () =>{
         addScore() {
             for (let i = 0; i < 199; i += this.width) {
                 const row = [i, i + 1, i + 2, i + 3, i + 4, i + 5, i + 6, i + 7, i + 8, i + 9];
-        
+                
+                // If every square in the row is taken, increment the score by 10 and remove the row
                 if (row.every((index) => this.squares[index].classList.contains('taken'))) {
                 this.score += 10;
                 this.displayScore();
@@ -263,11 +397,27 @@ document.addEventListener('DOMContentLoaded', () =>{
                 }
             }
         }
-          
+
+        /*restartGame() {
+            this.score = 0;
+            //reset all grid
+            if 
+            this.squares[index].classList.remove('taken');
+            this.squares[index].classList.remove('block');
+            this.squares[index].style.backgroundColor = '';
+            
+
+
+        }*/
+
         gameOver() {
             if (this.current.some((index) => this.squares[this.currentPosition + index].classList.contains('taken'))) {
                 this.scoreDisplay.innerHTML = 'Game Over';
-                clearInterval(this.timerId);
+                this.gameOverCheck = true;
+                clearInterval(this.timerId);                
+                const gameOverOverlay = document.getElementById('gameOverOverlay');
+                gameOverOverlay.style.display = ''; // Show the settings overlay
+
             }
         } 
     }
@@ -322,6 +472,7 @@ document.addEventListener('DOMContentLoaded', () =>{
               startupMenu.style.display = ''; // Show the startup menu
             });
         }
+        
 
         exit() {
         // Add code to exit the game, e.g., close the window or redirect to another page.
