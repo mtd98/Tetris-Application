@@ -47,31 +47,31 @@ document.addEventListener('DOMContentLoaded', () =>{
             ]
     
             this.lShape = [
-                //1st rotation 1-2-11-21
-                [1, 2, this.width+1, this.width*2+1],
+                //1st rotation 1-11-21-22 L
+                [1, this.width+1, this.width*2+1, this.width*2+2],
     
-                //2nd rotation 3-10-11-12
-                [3, this.width, this.width+1, this.width+2, this.width*2+2],
+                //2nd rotation 0-1-2-10 
+                [0, 1, 2, this.width],
     
-                //3rd rotation 1-11-20-21
-                [1, this.width+1, this.width*2, this.width*2+1],
+                //3rd rotation 0-1-11-21 ⅂
+                [0, 1, this.width+1, this.width*2+1],
     
-                //4th rotation 10-20-21-22
-                [this.width, this.width*2, this.width*2+1, this.width*2+2]
+                //4th rotation 10-11-12-20
+                [0, 1, 2, this.width]
             ]
 
             this.backwardslShape = [
-                //1st rotation 1-2-12-22
-                [1, 2, this.width+2, this.width*2+2],
-    
-                //2nd rotation 2-10-11-12
-                [2, this.width, this.width+1, this.width+2],
-    
-                //3rd rotation 1-11-20-21
+                //1st rotation 1-11-20-21
                 [1, this.width+1, this.width*2, this.width*2+1],
     
-                //4th rotation 10-20-21-22
-                [this.width, this.width*2, this.width*2+1, this.width*2+2]
+                //2nd rotation 0-10-11-12
+                [0, this.width, this.width*1+1, this.width*1+2],
+    
+                //3rd rotation 0-1-10-20
+                [0, 1, this.width, this.width*2],
+    
+                //4th rotation 0-1-2-12
+                [0, 1, 2, this.width+2]
             ]
     
             this.zShape = [
@@ -268,6 +268,7 @@ document.addEventListener('DOMContentLoaded', () =>{
 
             this.upNextShapes = [
                 [1, this.displayWidth + 1, this.displayWidth * 2 + 1, 2], // lShape
+                [1, this.width+1, this.width*2, this.width*2+1], //backwards lshape
                 [0, this.displayWidth, this.displayWidth + 1, this.displayWidth * 2 + 1], // zShape
                 [1, this.displayWidth, this.displayWidth + 1, this.displayWidth + 2], // tShape
                 [0, 1, this.displayWidth, this.displayWidth + 1], // oShape
@@ -489,5 +490,3 @@ document.addEventListener('DOMContentLoaded', () =>{
 
     const startupMenu = new StartupMenu();
 });
-
-
